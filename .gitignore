@@ -1,0 +1,5 @@
+/web/
+/vendor/
+/.idea/
+/.gitattributes
+/.editorconfig

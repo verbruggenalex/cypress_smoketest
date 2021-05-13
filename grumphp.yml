@@ -1,0 +1,71 @@
+# grumphp.yml
+grumphp:
+  ascii:
+    failed: ~
+    succeeded: ~
+  tasks:
+    # ant: ~
+    # atoum: ~
+    # behat: ~
+    # brunch: ~
+    # clover_coverage: ~
+    # codeception: ~
+    composer: ~
+    composer_normalize: ~
+    # composer_require_checker: ~
+    # composer_script: ~
+    # deptrac: ~
+    # doctrine_orm: ~
+    # ecs: ~
+    # eslint: ~
+    file_size:
+      max_size: 100K
+      ignore_patterns:
+        - composer.lock
+    # gherkin: ~
+    git_blacklist:
+      keywords:
+        - "die("
+        - "var_dump("
+        - "exit;"
+      triggered_by: [php,module,inc,install,test,profile,theme]
+    # git_branch_name: ~
+    # git_commit_message: ~
+    # grunt: ~
+    # gulp: ~
+    # infection: ~
+    jsonlint: ~
+    # kahlan: ~
+    # make: ~
+    # npm_script: ~
+    # paratest: ~
+    # pest: ~
+    # phan: ~
+    # phing: ~
+    # php7cc: ~
+    # phpcpd: ~
+    phpcs:
+      # This is defined in phpcs.xml as well!
+      triggered_by: [php,module,inc,install,test,profile,theme,css,info,txt,md]
+    # phpcsfixer: ~
+    phplint:
+      triggered_by: [php,module,inc,install,test,profile,theme]
+    # phpmd: ~
+    # phpmnd: ~
+    # phpparser: ~
+    # phpspec: ~
+    # phpstan: ~
+    # phpunit: ~
+    # phpunitbridge: ~
+    # phpversion: ~
+    # progpilot: ~
+    # psalm: ~
+    # robo: ~
+    securitychecker_enlightn:
+      lockfile: ./composer.lock
+      run_always: false
+    # shell: ~
+    # tester: ~
+    # twigcs: ~
+    xmllint: ~
+    yamllint: ~

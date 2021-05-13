@@ -1,0 +1,75 @@
+{
+    "name": "drupal/cypress_smoketest",
+    "type": "drupal-module",
+    "description": "Helper module to allow easy Cypress smoketests on Drupal.",
+    "homepage": "https://drupal.org/project/cypress_smoketest",
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Verbruggen Alex",
+            "email": "verbruggenalex@gmail.com"
+        }
+    ],
+    "require": {
+        "PHP": ">=7.1"
+    },
+    "require-dev": {
+        "composer/installers": "^1.7",
+        "drupal/admin_toolbar": "^2.0",
+        "drupal/coder": "^8.3",
+        "drupal/console": "^1.9",
+        "drupal/core-composer-scaffold": "^9.1",
+        "drupal/core-dev": "^9.1",
+        "drupal/core-recommended": "^9.1",
+        "drush/drush": "^10.1",
+        "enlightn/security-checker": "^1.9",
+        "ergebnis/composer-normalize": "^2.2",
+        "php-parallel-lint/php-parallel-lint": "^1.2",
+        "phpro/grumphp": "^1.2.0"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "drupal-scaffold": {
+            "allowed-packages": [
+                "drupal/core"
+            ],
+            "locations": {
+                "web-root": "./web"
+            }
+        },
+        "installer-paths": {
+            "web/core": [
+                "type:drupal-core"
+            ],
+            "web/modules/contrib/{$name}": [
+                "type:drupal-module"
+            ]
+        }
+    },
+    "repositories": {
+        "drupal": {
+            "type": "composer",
+            "url": "https://packages.drupal.org/8"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "scripts": {
+        "post-install-cmd": [
+            "@symlink-module"
+        ],
+        "post-update-cmd": [
+            "@symlink-module"
+        ],
+        "symlink-module": [
+            "rm -rf web/modules/contrib/cypress_smoketest",
+            "mkdir -p web/modules/contrib/cypress_smoketest",
+            "ln -sf $(pwd)/* $(pwd)/web/modules/contrib/cypress_smoketest",
+            "rm -f web/modules/contrib/cypress_smoketest/vendor",
+            "rm -f web/modules/contrib/cypress_smoketest/web",
+            "rm -f web/modules/contrib/cypress_smoketest/lib"
+        ]
+    }
+}

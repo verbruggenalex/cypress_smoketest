@@ -1,0 +1,25 @@
+version: '3'
+services:
+
+  web:
+    build: lib/docker
+    environment:
+      APACHE_DOCUMENT_ROOT: ${PWD}/web
+      PHP_EXTENSION_GD: 1
+    working_dir: ${PWD}
+    volumes:
+      - ${PWD}:${PWD}
+    ports:
+      - 80
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:5.7
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    volumes:
+      - mysql:/var/lib/mysql
+
+volumes:
+  mysql:

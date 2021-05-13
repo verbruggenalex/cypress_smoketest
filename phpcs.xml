@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<ruleset name="Drupal">
+  <description>Drupal coding standard</description>
+
+  <config name="installed_paths" value="vendor/drupal/coder/coder_sniffer" />
+  <config name="drupal_core_version" value="9"/>
+
+  <rule ref="Drupal" />
+  <rule ref="DrupalPractice" />
+
+  <arg name="extensions" value="php,inc,module,install,info,test,profile,theme,css,js" />
+  <arg name="ignore" value="web/,vendor/,node_modules/,tests/fixtures/,spec" />
+  <arg name="severity" value="1" />
+  <arg name="report" value="full" />
+  <arg name="report-width" value="100" />
+  <arg value="ps" />
+
+  <file>./</file>
+
+</ruleset>
