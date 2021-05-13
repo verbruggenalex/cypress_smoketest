@@ -4,5 +4,4 @@
 /.idea/
 /.gitattributes
 /.editorconfig
-!/cypress/*
-/cypress/integration
+

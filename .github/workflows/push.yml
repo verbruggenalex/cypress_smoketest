@@ -32,5 +32,5 @@ jobs:
 
       - name: Run Cypress
         run: |
-          docker-compose run --rm --entrypoint="cypress run --project ${PWD}" cypress
+          docker-compose run --rm --entrypoint="cypress run" cypress
 
