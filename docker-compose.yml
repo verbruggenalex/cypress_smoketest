@@ -2,7 +2,7 @@ version: '3'
 services:
 
   web:
-    build: lib/docker
+    build: lib/docker/apache
     environment:
       APACHE_DOCUMENT_ROOT: ${PWD}/web
       PHP_EXTENSION_GD: 1
@@ -23,6 +23,22 @@ services:
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
     volumes:
       - mysql:/var/lib/mysql
+
+  # To start with x11 first allow connections by executing: xhost +
+  # Then execute: docker-compose run --rm --entrypoint="cypress open --project ${PWD}" cypress
+  # To end with x11 make sure you put access control back on by executing: xhost -
+  # To just run the tests execute: docker-compose run --rm --entrypoint="cypress run --project ${PWD}" cypress
+  cypress:
+    image: cypress/included:4.0.2
+    depends_on:
+      - web
+    environment:
+      CYPRESS_baseUrl: http://web
+      DISPLAY:
+    working_dir: ${PWD}
+    volumes:
+      - ${PWD}:${PWD}
+      - /tmp/.X11-unix:/tmp/.X11-unix
 
 volumes:
   mysql:

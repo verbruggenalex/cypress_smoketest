@@ -30,7 +30,7 @@ jobs:
             node_modules/
           key: build-${{ hashFiles('composer.lock', 'package-lock.json') }}
 
-      - name: Static code checks
+      - name: Run Cypress
         run: |
-          docker-compose exec -T web grumphp run
+          docker-compose run --rm --entrypoint="cypress run --project ${PWD}" cypress
 

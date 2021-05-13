@@ -70,12 +70,13 @@
             "./vendor/bin/drush en admin_toolbar admin_toolbar_tools cypress_smoketest -y"
         ],
         "symlink-module": [
+            "rm -rf web/modules/contrib/cypress_smoketest",
             "mkdir -p web/modules/contrib/cypress_smoketest",
-            "ln -sf $(pwd)/* $(pwd)/web/modules/contrib/cypress_smoketest",
-            "rm -f web/modules/contrib/cypress_smoketest/node_modules",
-            "rm -f web/modules/contrib/cypress_smoketest/vendor",
-            "rm -f web/modules/contrib/cypress_smoketest/web",
-            "rm -f web/modules/contrib/cypress_smoketest/lib"
+            "ln -sf $(pwd)/src $(pwd)/web/modules/contrib/cypress_smoketest/src",
+            "ln -sf $(pwd)/composer.json $(pwd)/web/modules/contrib/cypress_smoketest/composer.json",
+            "ln -sf $(pwd)/cypress_smoketest.info.yml $(pwd)/web/modules/contrib/cypress_smoketest/cypress_smoketest.info.yml",
+            "ln -sf $(pwd)/cypress_smoketest.module $(pwd)/web/modules/contrib/cypress_smoketest/cypress_smoketest.module",
+            "ln -sf $(pwd)/cypress_smoketest.routing.yml $(pwd)/web/modules/contrib/cypress_smoketest/cypress_smoketest.routing.yml"
         ]
     }
 }
