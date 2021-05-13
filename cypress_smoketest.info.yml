@@ -1,0 +1,5 @@
+name: 'Cypress Smoketest'
+type: module
+description: 'Helper module to perform Cypress smoketest on Drupal'
+core_version_requirement: ^8.9 || ^9
+package: 'Development'

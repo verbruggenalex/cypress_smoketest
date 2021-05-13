@@ -1,5 +1,8 @@
 /web/
 /vendor/
+/node_modules/
 /.idea/
 /.gitattributes
 /.editorconfig
+/.composer.lock
+/package-lock.json

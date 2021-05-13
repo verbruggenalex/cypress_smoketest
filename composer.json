@@ -58,15 +58,21 @@
     "prefer-stable": true,
     "scripts": {
         "post-install-cmd": [
-            "@symlink-module"
+            "@symlink-module",
+            "@install-drupal"
         ],
         "post-update-cmd": [
-            "@symlink-module"
+            "@symlink-module",
+            "@install-drupal"
+        ],
+        "install-drupal": [
+            "./vendor/bin/drush si --db-url=mysql://root:@mysql:3306/drupal standard --account-pass=admin -y",
+            "./vendor/bin/drush en admin_toolbar admin_toolbar_tools cypress_smoketest -y"
         ],
         "symlink-module": [
-            "rm -rf web/modules/contrib/cypress_smoketest",
             "mkdir -p web/modules/contrib/cypress_smoketest",
             "ln -sf $(pwd)/* $(pwd)/web/modules/contrib/cypress_smoketest",
+            "rm -f web/modules/contrib/cypress_smoketest/node_modules",
             "rm -f web/modules/contrib/cypress_smoketest/vendor",
             "rm -f web/modules/contrib/cypress_smoketest/web",
             "rm -f web/modules/contrib/cypress_smoketest/lib"

@@ -6,6 +6,8 @@ services:
     environment:
       APACHE_DOCUMENT_ROOT: ${PWD}/web
       PHP_EXTENSION_GD: 1
+      GIT_USER_NAME:
+      GIT_USER_EMAIL:
     working_dir: ${PWD}
     volumes:
       - ${PWD}:${PWD}

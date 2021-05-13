@@ -1,0 +1,24 @@
+<?php
+
+/**
+ * @file
+ * Contains cypress_smoketest.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function cypress_smoketest_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the cypress_smoketest module.
+    case 'help.page.cypress_smoketest':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Helper module to perform Cypress smoketest on Drupal') . '</p>';
+      return $output;
+
+    default:
+  }
+}
