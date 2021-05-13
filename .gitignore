@@ -4,5 +4,3 @@
 /.idea/
 /.gitattributes
 /.editorconfig
-/.composer.lock
-/package-lock.json

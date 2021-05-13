@@ -11,6 +11,7 @@ services:
     working_dir: ${PWD}
     volumes:
       - ${PWD}:${PWD}
+      - ~/.ssh:/home/docker/.ssh
     ports:
       - 80
     depends_on:

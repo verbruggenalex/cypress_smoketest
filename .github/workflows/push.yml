@@ -1,0 +1,36 @@
+name: Push on master
+
+on:
+  push:
+    branches:
+      - master
+      - 1.0.x
+
+jobs:
+  push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Setup environment
+        run: |
+          docker-compose up -d web mysql
+          sleep 15
+          docker-compose ps
+
+      - name: Cache build
+        id: cache-build
+        uses: actions/cache@v2
+        with:
+          path: |
+            vendor/
+            web/
+            node_modules/
+          key: build-${{ hashFiles('composer.lock', 'package-lock.json') }}
+
+      - name: Static code checks
+        run: |
+          docker-compose exec -T web grumphp run
+

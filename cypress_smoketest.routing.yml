@@ -1,0 +1,8 @@
+
+cypress_smoketest.cypress_smoketest_controller_login:
+  path: '/cypress_smoketest/login/{role}'
+  defaults:
+    _controller: '\Drupal\cypress_smoketest\Controller\CypressSmoketestController::login'
+    _title: 'roleLoginEndpoint'
+  requirements:
+    _permission: 'access content'
