@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="Mocha Tests" time="0.177" tests="1" failures="0">
-  <testsuite name="Root Suite" timestamp="2021-05-13T20:20:56" tests="0" file="cypress/integration/smoketest_spec.js" failures="0" time="0">
-  </testsuite>
-  <testsuite name="My First Test" timestamp="2021-05-13T20:20:56" tests="1" failures="0" time="0.177">
-    <testcase name="My First Test Visits the Kitchen Sink" time="0.177" classname="Visits the Kitchen Sink">
-    </testcase>
-  </testsuite>
-</testsuites>
