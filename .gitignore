@@ -4,6 +4,6 @@
 /.idea/
 /.gitattributes
 /.editorconfig
-/cypress/videos/*.mp4
-
+/cypress/videos/*
+/cypress/results/*
 
