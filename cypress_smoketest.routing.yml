@@ -6,3 +6,4 @@ cypress_smoketest.cypress_smoketest_controller_login:
     _title: 'roleLoginEndpoint'
   requirements:
     _permission: 'access content'
+  methods:  [GET]
