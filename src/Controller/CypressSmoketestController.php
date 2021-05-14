@@ -5,6 +5,7 @@ namespace Drupal\cypress_smoketest\Controller;
 use Drupal\user\Entity\User;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Url;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
@@ -12,6 +13,22 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
  * Controller for the endpoints that help out Cypress.
  */
 class CypressSmoketestController extends ControllerBase {
+
+  /**
+   * Drupal\Core\Routing\RouteProviderInterface definition.
+   *
+   * @var \Drupal\Core\Routing\RouteProviderInterface
+   */
+  protected $routerRouteProvider;
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    $instance = parent::create($container);
+    $instance->routerRouteProvider = $container->get('router.route_provider');
+    return $instance;
+  }
 
   /**
    * A helper function returning results.
@@ -96,6 +113,8 @@ class CypressSmoketestController extends ControllerBase {
 
         $timestamp = \Drupal::time()->getRequestTime()-10;
         $path = \Drupal::service('path.current')->getPath();
+
+        // Login with same destination to re-list routers as logged in user.
         $link = Url::fromRoute(
           'user.reset.login',
           [
@@ -104,12 +123,11 @@ class CypressSmoketestController extends ControllerBase {
             'hash' => user_pass_rehash($user, $timestamp),
           ],
           [
-            'absolute' => TRUE,
+            'absolute' => true,
             'query' => $path ? ['destination' => $path] : [],
             'language' => \Drupal::languageManager()->getLanguage($user->getPreferredLangcode()),
           ]
         )->toString();
-        // Login and retry to list routers.
         return new RedirectResponse($link);
       }
     }
@@ -120,8 +138,19 @@ class CypressSmoketestController extends ControllerBase {
       ];
     }
 
+    $routes = $this->routerRouteProvider->getAllRoutes();
+    $list = [];
+    foreach ($routes as $route_name => $route) {
+      $path = $route->getPath();
+      // First get non dynamic routes working.
+      if (strpos($path, '{') === false) {
+        $list[] = $path;
+      }
+    }
+    $shortlist = array_slice($list, -10);
+    $shortlist = array_diff($shortlist, ['/views/ajax', '/admin/views/ajax/autocomplete/tag']);
     return new JsonResponse([
-      'data' => $this->getRouterResults(),
+      'data' => $shortlist,
       'method' => 'GET',
     ]);
   }
