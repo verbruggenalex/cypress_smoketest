@@ -1,16 +1,10 @@
 /// <reference types="cypress" />
-describe('dynamic users using request', () => {
+describe('Smoketest on list of urls', () => {
   // this example fetches list of 3 users from the server
   // and then creates 3 separate tests to check something about each user
 
-  let urls
-
   before(() => {
-    // receive the dynamic list of users
     cy.request('http://web/cypress_smoketest/login/administrator')
-      .then((response) => {
-        urls = Object.values(response.body.data)
-      })
   })
 
   // commands.js
@@ -21,25 +15,16 @@ describe('dynamic users using request', () => {
     })
   })
 
-// your-suite.test.js
+  // your-suite.test.js
   beforeEach(function () {
     cy.preserveAllCookiesOnce()
   });
 
-  // we know there will be 3 objects in the "users" list
-  Cypress._.range(0, 7).forEach((k) => {
-    it(`Visit # ${k}`, () => {
-      const url = urls[k]
-      cy.log(`Visiting ${url}`)
-      cy.visit(`${url}`)
+  const urls = require('../fixtures/urls')
+  urls.forEach((url) => {
+    it(`Visit ${url}`, () => {
+      cy.visit(url)
     })
   })
-  // // dynamically create a single test for each operation in the list
-  // urls.forEach((url) => {
-  //   // derive test name from data
-  //   it(`Visit ${url}`, () => {
-  //     cy.visit(url)
-  //   })
-  // })
 
 })

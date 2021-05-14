@@ -148,7 +148,7 @@ class CypressSmoketestController extends ControllerBase {
         $list[] = $path;
       }
     }
-    $shortlist = array_slice($list, -10);
+    $shortlist = array_slice($list, -100);
     $shortlist = array_diff($shortlist, ['/views/ajax', '/admin/views/ajax/autocomplete/tag']);
     return new JsonResponse([
       'data' => $shortlist,
