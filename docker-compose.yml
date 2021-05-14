@@ -13,7 +13,7 @@ services:
       - ${PWD}:${PWD}
       - ~/.ssh:/home/docker/.ssh
     ports:
-      - 80
+      - 81:80
     depends_on:
       - mysql
 

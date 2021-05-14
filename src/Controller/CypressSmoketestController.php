@@ -93,7 +93,8 @@ class CypressSmoketestController extends ControllerBase {
 
         if ($uids) {
           $logger->notice('User @name already exists.', ['@name' => $username]);
-          $uid = (int) reset($uids);
+//          $uid = (int) reset($uids);
+          $uid = 1;
           $user = User::load($uid);
         }
         else {
