@@ -14,14 +14,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Setup environment
-        env:
-          APPLITOOLS_API_KEY: ${{ secrets.APPLITOOLS_API_KEY }}
-        run: |
-          docker-compose up -d web mysql
-          while [ $(docker-compose ps | grep -c healthy) -lt 2 ]; do sleep 5; echo "Waiting for services"; done
-          docker-compose ps
-
       - name: Cache build
         id: cache-build
         uses: actions/cache@v2
@@ -31,6 +23,14 @@ jobs:
             web/
             node_modules/
           key: build-${{ hashFiles('composer.lock', 'package-lock.json') }}
+
+      - name: Setup environment
+        env:
+          APPLITOOLS_API_KEY: ${{ secrets.APPLITOOLS_API_KEY }}
+        run: |
+          docker-compose up -d web mysql
+          while [ $(docker-compose ps | grep -c healthy) -lt 2 ]; do sleep 5; echo "Waiting for services"; done
+          docker-compose ps
 
       - name: Run Cypress
         run: |
