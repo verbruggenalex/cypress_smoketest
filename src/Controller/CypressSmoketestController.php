@@ -9,7 +9,6 @@ use Drupal\Core\Url;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Drupal\toolbar\Controller\ToolbarController;
 
 /**
  * Controller for the endpoints that help out Cypress.
@@ -57,7 +56,7 @@ class CypressSmoketestController extends ControllerBase {
 
         if ($uids) {
           $logger->notice('User @name already exists.', ['@name' => $username]);
-//          $uid = (int) reset($uids);
+          // $uid = (int) reset($uids);
           $uid = 1;
           $user = User::load($uid);
         }
@@ -76,7 +75,7 @@ class CypressSmoketestController extends ControllerBase {
           $logger->notice('Created user @name.', ['@name' => $username]);
         }
 
-        $timestamp = \Drupal::time()->getRequestTime()-10;
+        $timestamp = \Drupal::time()->getRequestTime() - 10;
         $path = \Drupal::service('path.current')->getPath();
 
         // Login with same destination to re-list routers as logged in user.
@@ -88,7 +87,7 @@ class CypressSmoketestController extends ControllerBase {
             'hash' => user_pass_rehash($user, $timestamp),
           ],
           [
-            'absolute' => true,
+            'absolute' => TRUE,
             'query' => $path ? ['destination' => $path] : [],
             'language' => \Drupal::languageManager()->getLanguage($user->getPreferredLangcode()),
           ]
@@ -102,38 +101,37 @@ class CypressSmoketestController extends ControllerBase {
         '#markup' => $this->t('Role does not exist.'),
       ];
     }
-
-    $routes = $this->routerRouteProvider->getAllRoutes();
-    $list = [];
-    foreach ($routes as $route_name => $route) {
-      $path = $route->getPath();
-      // First get non dynamic routes working.
-      if (strpos($path, 'ajax') === false) {
-        $list[] = $path;
-      }
-      // First get non dynamic routes working.
-      if (strpos($path, '{') === false) {
-        $list[] = $path;
-      }
-//      if (strpos($path, 'taxonomy_vocabulary') !== false) {
-////        kint($route);
-//        $block_content_type = $this->entityTypeManager()
-//          ->getStorage('taxonomy_vocabulary')
-//          ->loadMultiple();
-//        kint($block_content_type);
-//      }
-    }
     $shortlist = array_slice($list, -10);
     $shortlist = array_diff($shortlist, ['/views/ajax', '/admin/views/ajax/autocomplete/tag']);
 
+    // Get all links from the toolbar.
     $menu_tree = \Drupal::service('toolbar.menu_tree');
     $parameters = new MenuTreeParameters();
     $parameters->setMinDepth(2)->setMaxDepth(5);
     $tree = $menu_tree->load('admin', $parameters);
+    $manipulators = [
+      ['callable' => 'menu.default_tree_manipulators:checkAccess'],
+      ['callable' => 'menu.default_tree_manipulators:generateIndexAndSort'],
+      ['callable' => 'toolbar_menu_navigation_links'],
+    ];
+    $tree = $menu_tree->transform($tree, $manipulators);
     $links = $this->retrieveLinks($tree);
+    // Remove some things we don't really want or fail.
+    $links = array_filter($links, function ($link) {
+      return (stripos($link, '?') === FALSE);
+    });
+    $links = array_diff($links, [
+      '/update.php',
+      '/user/logout',
+      '/admin/structure/contact/manage/personal',
+      '/admin/structure/contact/manage/personal/delete',
+    ]);
     return new JsonResponse($links);
   }
 
+  /**
+   *
+   */
   public function retrieveLinks($tree) {
     $links = [];
 

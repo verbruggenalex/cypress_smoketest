@@ -34,3 +34,12 @@ jobs:
         run: |
           docker-compose run --rm --entrypoint="cypress run" cypress
 
+      - name: Upload test results
+        uses: actions/upload-artifact@v2
+        with:
+          name: cypress
+          path: |
+            cypress/results
+            cypress/screenshots
+            cypress/videos
+
