@@ -36,7 +36,7 @@ describe('Smoketest on list of urls', () => {
         fully: true
       });
 
-      cy.eyesClose()
+      //cy.eyesClose()
     })
   })
 
