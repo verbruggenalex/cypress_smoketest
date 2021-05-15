@@ -24,6 +24,19 @@ describe('Smoketest on list of urls', () => {
   urls.forEach((url) => {
     it(`Visit ${url}`, () => {
       cy.visit(url)
+      // Call Open on eyes to initialize a test session
+      cy.eyesOpen({
+        appName: 'Drupal',
+        testName: 'Smoketest',
+      })
+
+      cy.eyesCheckWindow({
+        tag: url,
+        target: 'window',
+        fully: true
+      });
+
+      cy.eyesClose()
     })
   })
 

@@ -17,7 +17,8 @@ jobs:
       - name: Setup environment
         run: |
           docker-compose up -d web mysql
-          sleep 15
+          sleep 30
+          docker-compose logs web
           docker-compose ps
 
       - name: Cache build
