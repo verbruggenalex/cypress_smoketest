@@ -31,9 +31,13 @@ jobs:
             node_modules/
           key: build-${{ hashFiles('composer.lock', 'package-lock.json') }}
 
-      - name: Run Cypress
+      - name: Install Cypress
+        if: steps.cache-build.outputs.cache-hit != 'true'
         run: |
           docker-compose exec -T web cypress install
+
+      - name: Run Cypress
+        run: |
           docker-compose exec -T web cypress run
 
       - name: Upload test results

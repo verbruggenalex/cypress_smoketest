@@ -5,6 +5,7 @@ services:
     build: lib/docker/apache
     environment:
       APPLITOOLS_API_KEY:
+      CYPRESS_INSTALL_BINARY: ${PWD}/vendor/bin
       APACHE_DOCUMENT_ROOT: ${PWD}/web
       PHP_EXTENSION_GD: 1
       GIT_USER_NAME:
