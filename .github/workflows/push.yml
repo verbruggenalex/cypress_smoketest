@@ -17,8 +17,7 @@ jobs:
       - name: Setup environment
         run: |
           docker-compose up -d web mysql
-          sleep 30
-          docker-compose logs web
+          while [ $(docker-compose ps | grep -c healthy) -lt 2 ]; do sleep 5; echo "Waiting for services"; done
           docker-compose ps
 
       - name: Cache build

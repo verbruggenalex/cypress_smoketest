@@ -1,11 +1,10 @@
-version: '3'
+version: '3.4'
 services:
 
   web:
     build: lib/docker/apache
     environment:
       APPLITOOLS_API_KEY:
-      CYPRESS_INSTALL_BINARY: ${PWD}/vendor/bin
       APACHE_DOCUMENT_ROOT: ${PWD}/web
       PHP_EXTENSION_GD: 1
       GIT_USER_NAME:
@@ -18,6 +17,12 @@ services:
       - 81:80
     depends_on:
       - mysql
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost"]
+      interval: 5s
+      timeout: 60s
+      retries: 5
+      start_period: 30s
 
   mysql:
     image: mysql:5.7
@@ -26,20 +31,26 @@ services:
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
     volumes:
       - ./lib/mysql:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: 'mysql --user=root --password="" --execute="SHOW DATABASES;"'
+      interval: 5s
+      timeout: 60s
+      retries: 5
+      start_period: 30s
 
   # To start with x11 first allow connections by executing: xhost +
   # Then execute: docker-compose run --rm --entrypoint="cypress open --project ${PWD}" cypress
   # To end with x11 make sure you put access control back on by executing: xhost -
   # To just run the tests execute: docker-compose run --rm --entrypoint="cypress run" cypress
-  cypress:
-    image: cypress/included:7.3.0
-    depends_on:
-      - web
-    environment:
-      APPLITOOLS_API_KEY:
-      CYPRESS_baseUrl: http://web
-      DISPLAY:
-    working_dir: ${PWD}
-    volumes:
-      - ${PWD}:${PWD}
-      - /tmp/.X11-unix:/tmp/.X11-unix
+#  cypress:
+#    image: cypress/included:7.3.0
+#    depends_on:
+#      - web
+#    environment:
+#      APPLITOOLS_API_KEY:
+#      CYPRESS_baseUrl: http://web
+#      DISPLAY:
+#    working_dir: ${PWD}
+#    volumes:
+#      - ${PWD}:${PWD}
+#      - /tmp/.X11-unix:/tmp/.X11-unix
