@@ -2,12 +2,14 @@
 
 namespace Drupal\cypress_smoketest\Controller;
 
+use Drupal\Core\Menu\MenuTreeParameters;
 use Drupal\user\Entity\User;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Url;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Drupal\toolbar\Controller\ToolbarController;
 
 /**
  * Controller for the endpoints that help out Cypress.
@@ -28,44 +30,6 @@ class CypressSmoketestController extends ControllerBase {
     $instance = parent::create($container);
     $instance->routerRouteProvider = $container->get('router.route_provider');
     return $instance;
-  }
-
-  /**
-   * A helper function returning results.
-   */
-  public function getRouterResults() {
-    return [
-      [
-        "name" => "The Shawshank Redemption",
-        "year" => 1994,
-        "duration" => 142,
-      ],
-      [
-        "name" => "The Godfather",
-        "year" => 1972,
-        "duration" => '',
-      ],
-      [
-        "name" => "The Dark Knight",
-        "year" => 2008,
-        "duration" => 175,
-      ],
-      [
-        "name" => "The Godfather: Part II",
-        "year" => 1974,
-        "duration" => '',
-      ],
-      [
-        "name" => "Pulp Fiction",
-        "year" => 1994,
-        "duration" => '',
-      ],
-      [
-        "name" => "The Lord of the Rings: The Return of the King",
-        "year" => 2003,
-        "duration" => '',
-      ],
-    ];
   }
 
   /**
@@ -144,16 +108,42 @@ class CypressSmoketestController extends ControllerBase {
     foreach ($routes as $route_name => $route) {
       $path = $route->getPath();
       // First get non dynamic routes working.
+      if (strpos($path, 'ajax') === false) {
+        $list[] = $path;
+      }
+      // First get non dynamic routes working.
       if (strpos($path, '{') === false) {
         $list[] = $path;
       }
+//      if (strpos($path, 'taxonomy_vocabulary') !== false) {
+////        kint($route);
+//        $block_content_type = $this->entityTypeManager()
+//          ->getStorage('taxonomy_vocabulary')
+//          ->loadMultiple();
+//        kint($block_content_type);
+//      }
     }
-    $shortlist = array_slice($list, -100);
+    $shortlist = array_slice($list, -10);
     $shortlist = array_diff($shortlist, ['/views/ajax', '/admin/views/ajax/autocomplete/tag']);
-    return new JsonResponse([
-      'data' => $shortlist,
-      'method' => 'GET',
-    ]);
+
+    $menu_tree = \Drupal::service('toolbar.menu_tree');
+    $parameters = new MenuTreeParameters();
+    $parameters->setMinDepth(2)->setMaxDepth(5);
+    $tree = $menu_tree->load('admin', $parameters);
+    $links = $this->retrieveLinks($tree);
+    return new JsonResponse($links);
+  }
+
+  public function retrieveLinks($tree) {
+    $links = [];
+
+    foreach ($tree as $element) {
+      $links[] = $element->link->getUrlObject()->toString();
+      if ($element->subtree) {
+        $links = array_merge($links, $this->retrieveLinks($element->subtree));
+      }
+    }
+    return $links;
   }
 
 }

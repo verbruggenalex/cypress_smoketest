@@ -21,9 +21,11 @@
         "drupal/core-composer-scaffold": "^9.1",
         "drupal/core-dev": "^9.1",
         "drupal/core-recommended": "^9.1",
+        "drupal/devel": "^4.1",
         "drush/drush": "^10.1",
         "enlightn/security-checker": "^1.9",
         "ergebnis/composer-normalize": "^2.2",
+        "kint-php/kint": "^3.3",
         "php-parallel-lint/php-parallel-lint": "^1.2",
         "phpro/grumphp": "^1.2.0"
     },
@@ -67,7 +69,7 @@
         ],
         "install-drupal": [
             "./vendor/bin/drush si --db-url=mysql://root:@mysql:3306/drupal standard --account-pass=admin -y",
-            "./vendor/bin/drush en admin_toolbar admin_toolbar_tools cypress_smoketest -y"
+            "./vendor/bin/drush en admin_toolbar admin_toolbar_tools cypress_smoketest devel -y"
         ],
         "symlink-module": [
             "rm -rf web/modules/contrib/cypress_smoketest",
