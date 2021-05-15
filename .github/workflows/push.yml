@@ -33,6 +33,7 @@ jobs:
 
       - name: Run Cypress
         run: |
+          docker-compose exec -T web cypress install
           docker-compose exec -T web cypress run
 
       - name: Upload test results
