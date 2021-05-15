@@ -32,7 +32,7 @@ jobs:
 
       - name: Run Cypress
         run: |
-          docker-compose exec web cypress run
+          docker-compose exec -T web cypress run
 
       - name: Upload test results
         uses: actions/upload-artifact@v2
