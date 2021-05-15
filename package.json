@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/verbruggenalex/cypress_smoketest#readme",
   "devDependencies": {
+    "@applitools/eyes-cypress": "^3.21.1",
     "cypress": "^7.3.0"
   }
 }

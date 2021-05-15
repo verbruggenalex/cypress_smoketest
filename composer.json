@@ -39,6 +39,9 @@
             ],
             "locations": {
                 "web-root": "./web"
+            },
+            "file-mapping": {
+                "[web-root]/sites/default/settings.php": "lib/drupal/sites/default/settings.php"
             }
         },
         "installer-paths": {
@@ -60,12 +63,10 @@
     "prefer-stable": true,
     "scripts": {
         "post-install-cmd": [
-            "@symlink-module",
-            "@install-drupal"
+            "@symlink-module"
         ],
         "post-update-cmd": [
-            "@symlink-module",
-            "@install-drupal"
+            "@symlink-module"
         ],
         "install-drupal": [
             "./vendor/bin/drush si --db-url=mysql://root:@mysql:3306/drupal standard --account-pass=admin -y",

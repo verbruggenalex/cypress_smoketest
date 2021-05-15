@@ -1,0 +1,5 @@
+command:
+  sql:
+    dump:
+      options:
+        extra-dump: '--default-character-set=utf8mb4 --column-statistics=0'

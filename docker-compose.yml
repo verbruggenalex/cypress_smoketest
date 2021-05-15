@@ -20,25 +20,24 @@ services:
   mysql:
     image: mysql:5.7
     environment:
+      MYSQL_DATABASE: drupal
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
     volumes:
-      - mysql:/var/lib/mysql
+      - ./lib/mysql:/docker-entrypoint-initdb.d
 
   # To start with x11 first allow connections by executing: xhost +
   # Then execute: docker-compose run --rm --entrypoint="cypress open --project ${PWD}" cypress
   # To end with x11 make sure you put access control back on by executing: xhost -
   # To just run the tests execute: docker-compose run --rm --entrypoint="cypress run" cypress
   cypress:
-    image: cypress/included:4.0.2
+    image: cypress/included:7.3.0
     depends_on:
       - web
     environment:
+      APPLITOOLS_API_KEY:
       CYPRESS_baseUrl: http://web
       DISPLAY:
     working_dir: ${PWD}
     volumes:
       - ${PWD}:${PWD}
       - /tmp/.X11-unix:/tmp/.X11-unix
-
-volumes:
-  mysql:

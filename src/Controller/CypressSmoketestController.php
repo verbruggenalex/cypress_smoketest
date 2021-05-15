@@ -126,6 +126,8 @@ class CypressSmoketestController extends ControllerBase {
       '/admin/structure/contact/manage/personal',
       '/admin/structure/contact/manage/personal/delete',
     ]);
+    // Scale back to one, because free applitools account.
+    $links = [$links[0]];
     return new JsonResponse($links);
   }
 
