@@ -23,3 +23,11 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+
+// commands.js
+Cypress.Commands.add('preserveAllCookiesOnce', () => {
+  cy.getCookies().then(cookies => {
+    const namesOfCookies = cookies.map(c => c.name)
+    Cypress.Cookies.preserveOnce(...namesOfCookies)
+  })
+})

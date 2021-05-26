@@ -1,18 +1,23 @@
 version: '3.4'
 services:
-
   web:
     build: lib/docker/apache
     environment:
       APPLITOOLS_API_KEY:
+      CYPRESS_CACHE_FOLDER: ${PWD}/vendor/bin
+      CYPRESS_baseUrl: http://web
       APACHE_DOCUMENT_ROOT: ${PWD}/web
       PHP_EXTENSION_GD: 1
+      PHP_EXTENSION_XDEBUG: 1
+      PHP_INI_XDEBUG__REMOTE_AUTOSTART: 1
       GIT_USER_NAME:
       GIT_USER_EMAIL:
+      DISPLAY:
     working_dir: ${PWD}
     volumes:
       - ${PWD}:${PWD}
       - ~/.ssh:/home/docker/.ssh
+      - /tmp/.X11-unix:/tmp/.X11-unix
     ports:
       - 81:80
     depends_on:
@@ -37,20 +42,3 @@ services:
       timeout: 60s
       retries: 5
       start_period: 30s
-
-  # To start with x11 first allow connections by executing: xhost +
-  # Then execute: docker-compose run --rm --entrypoint="cypress open --project ${PWD}" cypress
-  # To end with x11 make sure you put access control back on by executing: xhost -
-  # To just run the tests execute: docker-compose run --rm --entrypoint="cypress run" cypress
-#  cypress:
-#    image: cypress/included:7.3.0
-#    depends_on:
-#      - web
-#    environment:
-#      APPLITOOLS_API_KEY:
-#      CYPRESS_baseUrl: http://web
-#      DISPLAY:
-#    working_dir: ${PWD}
-#    volumes:
-#      - ${PWD}:${PWD}
-#      - /tmp/.X11-unix:/tmp/.X11-unix

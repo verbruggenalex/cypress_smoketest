@@ -94,6 +94,12 @@ class CypressSmoketestController extends ControllerBase {
         )->toString();
         return new RedirectResponse($link);
       }
+      else {
+        return [
+          '#type' => 'markup',
+          '#markup' => $this->t('User is logged in.'),
+        ];
+      }
     }
     else {
       return [
@@ -101,34 +107,40 @@ class CypressSmoketestController extends ControllerBase {
         '#markup' => $this->t('Role does not exist.'),
       ];
     }
-    $shortlist = array_slice($list, -10);
-    $shortlist = array_diff($shortlist, ['/views/ajax', '/admin/views/ajax/autocomplete/tag']);
+  }
 
-    // Get all links from the toolbar.
-    $menu_tree = \Drupal::service('toolbar.menu_tree');
-    $parameters = new MenuTreeParameters();
-    $parameters->setMinDepth(2)->setMaxDepth(5);
-    $tree = $menu_tree->load('admin', $parameters);
-    $manipulators = [
-      ['callable' => 'menu.default_tree_manipulators:checkAccess'],
-      ['callable' => 'menu.default_tree_manipulators:generateIndexAndSort'],
-      ['callable' => 'toolbar_menu_navigation_links'],
-    ];
-    $tree = $menu_tree->transform($tree, $manipulators);
-    $links = $this->retrieveLinks($tree);
-    // Remove some things we don't really want or fail.
-    $links = array_filter($links, function ($link) {
-      return (stripos($link, '?') === FALSE);
-    });
-    $links = array_diff($links, [
-      '/update.php',
-      '/user/logout',
-      '/admin/structure/contact/manage/personal',
-      '/admin/structure/contact/manage/personal/delete',
-    ]);
-    // Scale back to one, because free applitools account.
-    $links = [$links[0]];
-    return new JsonResponse($links);
+  /**
+   *
+   */
+  public function getAdminMenuLinksPerRole() {
+    $roles = $this->entityTypeManager()->getStorage('user_role')->loadMultiple();
+    foreach ($roles as $role) {
+      // Get all links from the toolbar.
+      $menu_tree = \Drupal::service('toolbar.menu_tree');
+      $parameters = new MenuTreeParameters();
+      $parameters->setMinDepth(2)->setMaxDepth(5);
+      $tree = $menu_tree->load('admin', $parameters);
+      $manipulators = [
+        ['callable' => 'cypress_smoketest.default_tree_manipulators:checkAccess'],
+        ['callable' => 'menu.default_tree_manipulators:generateIndexAndSort'],
+        ['callable' => 'toolbar_menu_navigation_links'],
+      ];
+      $tree = $menu_tree->transform($tree, $manipulators);
+      $links = $this->retrieveLinks($tree);
+      // Remove some things we don't really want or fail.
+      $links = array_filter($links, function ($link) {
+        return (stripos($link, '?') === FALSE);
+      });
+      $links = array_diff($links, [
+        '/update.php',
+        '/user/logout',
+        '/admin/structure/contact/manage/personal',
+        '/admin/structure/contact/manage/personal/delete',
+      ]);
+      // Scale back to one, because free applitools account.
+      //      $links = [$links[0]];.
+      return new JsonResponse($links);
+    }
   }
 
   /**

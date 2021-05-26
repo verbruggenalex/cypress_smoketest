@@ -1,4 +1,3 @@
-
 cypress_smoketest.cypress_smoketest_controller_login:
   path: '/cypress_smoketest/login/{role}'
   defaults:
@@ -7,3 +6,11 @@ cypress_smoketest.cypress_smoketest_controller_login:
   requirements:
     _permission: 'access content'
   methods:  [GET]
+cypress_smoketest.cypress_smoketest_controller_get_admin_menu_links_per_role:
+  path: '/cypress_smoketest/admin_menu_links'
+  defaults:
+    _controller: '\Drupal\cypress_smoketest\Controller\CypressSmoketestController::getAdminMenuLinksPerRole'
+  requirements:
+    _permission: 'access content'
+  methods: [ GET ]
+
