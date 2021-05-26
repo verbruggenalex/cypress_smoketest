@@ -1,6 +1,8 @@
 /// <reference types="cypress" />
 describe('Smoketest on list of urls', () => {
 
+  let startTime
+
   before(() => {
     // This endpoint is provided by this module to automatically login with a certain role.
     // If no user is in the database yet, one will be created.
@@ -9,6 +11,7 @@ describe('Smoketest on list of urls', () => {
   })
 
   beforeEach(function () {
+    startTime = Date.now()
     cy.preserveAllCookiesOnce()
   });
 
@@ -19,5 +22,13 @@ describe('Smoketest on list of urls', () => {
       cy.visit(url)
     })
   })
+
+  afterEach(function () {
+    cy.request('/cypress_smoketest/watchdog/' + startTime + '/' + Date.now()).then(
+      (response) => {
+        expect(response.body).to.have.length(2)
+      }
+    )
+  });
 
 })

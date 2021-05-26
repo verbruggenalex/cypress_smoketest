@@ -13,4 +13,16 @@ cypress_smoketest.cypress_smoketest_controller_get_admin_menu_links_for_current_
   requirements:
     _permission: 'access content'
   methods: [ GET ]
+example.user:
+  path: '/cypress_smoketest/watchdog/{test_start_timestamp}/{test_end_timestamp}'
+  defaults:
+    _controller: '\Drupal\cypress_smoketest\Controller\CypressSmoketestController::getWatchdogPhpMessages'
+  requirements:
+    _permission: 'access content'
+  options:
+    parameters:
+      test_start_timestamp:
+        type: int
+      test_end_timestamp:
+        type: int
 

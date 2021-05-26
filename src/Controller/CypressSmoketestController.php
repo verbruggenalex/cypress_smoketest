@@ -109,6 +109,29 @@ class CypressSmoketestController extends ControllerBase {
     }
   }
 
+  public function getWatchdogPhpMessages(int $test_start_timestamp, int $test_end_timestamp) {
+    $result = \Drupal::database()->select('watchdog', 'w')
+      ->fields('w', [])
+      ->condition('w.type', 'php', '=')
+      ->condition('w.timestamp', [$test_start_timestamp, $test_end_timestamp], 'BETWEEN')
+      ->execute();
+    if (empty($result)) {
+      return [
+        '#type' => 'markup',
+        '#markup' => $this->t("No php messages logged between $test_start_timestamp and $test_end_timestamp."),
+      ];
+    }
+    else {
+      $errors = [];
+      foreach ($result as $entry) {
+        $messagePlaceholders = unserialize($entry->variables);
+        $message = new FormattableMarkup($entry->message, $messagePlaceholders);
+        $errors[] = strip_tags($message);
+      }
+      return new JsonResponse(json_encode($errors));
+    }
+  }
+
   /**
    *
    */

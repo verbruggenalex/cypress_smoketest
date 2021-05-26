@@ -3,6 +3,7 @@
 ## Setup environment
 
 ```bash
+# Wait 30 seconds or so because we set up the project in composer install.
 docker-compose up -d
 ```
 
@@ -17,7 +18,7 @@ docker-compose run --rm --entrypoint="cypress open --project ${PWD}" web
 xhost -
 ```
 
-# Run cypress
+## Run cypress
 
 ```bash
 # To just run the tests execute:
