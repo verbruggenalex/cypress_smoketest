@@ -6,10 +6,10 @@ cypress_smoketest.cypress_smoketest_controller_login:
   requirements:
     _permission: 'access content'
   methods:  [GET]
-cypress_smoketest.cypress_smoketest_controller_get_admin_menu_links_per_role:
+cypress_smoketest.cypress_smoketest_controller_get_admin_menu_links_for_current_user:
   path: '/cypress_smoketest/admin_menu_links'
   defaults:
-    _controller: '\Drupal\cypress_smoketest\Controller\CypressSmoketestController::getAdminMenuLinksPerRole'
+    _controller: '\Drupal\cypress_smoketest\Controller\CypressSmoketestController::getAdminMenuLinksForCurrentUser'
   requirements:
     _permission: 'access content'
   methods: [ GET ]

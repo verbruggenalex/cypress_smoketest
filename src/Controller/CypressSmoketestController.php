@@ -112,8 +112,9 @@ class CypressSmoketestController extends ControllerBase {
   /**
    *
    */
-  public function getAdminMenuLinksPerRole() {
-    $roles = $this->entityTypeManager()->getStorage('user_role')->loadMultiple();
+  public function getAdminMenuLinksForCurrentUser() {
+    $roles = $this->currentUser()->getRoles();
+    $all_links = [];
     foreach ($roles as $role) {
       // Get all links from the toolbar.
       $menu_tree = \Drupal::service('toolbar.menu_tree');
@@ -121,7 +122,7 @@ class CypressSmoketestController extends ControllerBase {
       $parameters->setMinDepth(2)->setMaxDepth(5);
       $tree = $menu_tree->load('admin', $parameters);
       $manipulators = [
-        ['callable' => 'cypress_smoketest.default_tree_manipulators:checkAccess'],
+        ['callable' => 'menu.default_tree_manipulators:checkAccess'],
         ['callable' => 'menu.default_tree_manipulators:generateIndexAndSort'],
         ['callable' => 'toolbar_menu_navigation_links'],
       ];
@@ -137,10 +138,10 @@ class CypressSmoketestController extends ControllerBase {
         '/admin/structure/contact/manage/personal',
         '/admin/structure/contact/manage/personal/delete',
       ]);
-      // Scale back to one, because free applitools account.
-      //      $links = [$links[0]];.
-      return new JsonResponse($links);
+
+      $all_links += $links;
     }
+    return new JsonResponse($all_links);
   }
 
   /**
