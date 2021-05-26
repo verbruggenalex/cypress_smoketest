@@ -79,7 +79,8 @@
             "ln -sf $(pwd)/composer.json $(pwd)/web/modules/contrib/cypress_smoketest/composer.json",
             "ln -sf $(pwd)/cypress_smoketest.info.yml $(pwd)/web/modules/contrib/cypress_smoketest/cypress_smoketest.info.yml",
             "ln -sf $(pwd)/cypress_smoketest.module $(pwd)/web/modules/contrib/cypress_smoketest/cypress_smoketest.module",
-            "ln -sf $(pwd)/cypress_smoketest.routing.yml $(pwd)/web/modules/contrib/cypress_smoketest/cypress_smoketest.routing.yml"
+            "ln -sf $(pwd)/cypress_smoketest.routing.yml $(pwd)/web/modules/contrib/cypress_smoketest/cypress_smoketest.routing.yml",
+            "ln -sf $(pwd)/cypress_smoketest.services.yml $(pwd)/web/modules/contrib/cypress_smoketest/cypress_smoketest.services.yml"
         ]
     }
 }

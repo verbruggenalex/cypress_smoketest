@@ -13,12 +13,13 @@ cypress_smoketest.cypress_smoketest_controller_get_admin_menu_links_for_current_
   requirements:
     _permission: 'access content'
   methods: [ GET ]
-example.user:
+cypress_smoketest.cypress_smoketest_controller_get_watchdog_php_messages:
   path: '/cypress_smoketest/watchdog/{test_start_timestamp}/{test_end_timestamp}'
   defaults:
     _controller: '\Drupal\cypress_smoketest\Controller\CypressSmoketestController::getWatchdogPhpMessages'
   requirements:
     _permission: 'access content'
+  methods: [ GET ]
   options:
     parameters:
       test_start_timestamp:
