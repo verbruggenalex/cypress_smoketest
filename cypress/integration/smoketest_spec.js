@@ -11,24 +11,53 @@ describe('Smoketest on list of urls', () => {
   })
 
   beforeEach(function () {
-    startTime = Date.now()
+    startTime = Math.floor(Date.now()/1000)
     cy.preserveAllCookiesOnce()
   });
 
   // Visit all urls from the fixture.
-  const urls = require('../fixtures/urls')
-  urls.forEach((url) => {
-    it(`Visit ${url}`, () => {
-      cy.visit(url)
+  const items = require('../fixtures/smoke')
+  items.forEach((item) => {
+    it(`Visit ${item.url}`, () => {
+      // Check if response status matches.
+      cy.request({
+        url: item.url,
+        failOnStatusCode: false
+      }).then((resp) => {
+        let status = item.hasOwnProperty('status') ? item.status : 200
+        expect(resp.status).to.eq(status)
+      })
+      // Visit the url.
+      cy.visit({
+        url: item.url,
+        failOnStatusCode: false
+      })
+      // If we have exceptions check if we expect them.
+      cy.on('uncaught:exception', (err, runnable) => {
+        if (item.hasOwnProperty('jsallowregex')) {
+          let regexp = new RegExp(item.jsallowregex);
+          expect(err.message).to.match(regexp)
+          return false
+        }
+      })
+      // Check if watchdog is what we expect it to be.
+      cy.request('/cypress_smoketest/watchdog/' + startTime + '/' + Math.floor(Date.now()/1000)).then(
+        (response) => {
+          let watchdog = JSON.parse(response.body)
+          if (watchdog.length > 0) {
+            watchdog.forEach(function(entry) {
+              if (item.hasOwnProperty('phpallowregex')) {
+                let regexp = new RegExp(item.phpallowregex);
+                expect(entry.message).to.match(regexp)
+              }
+              else {
+                expect(entry.message).to.not.exist
+              }
+            });
+          }
+        }
+      )
     })
   })
-
-  afterEach(function () {
-    cy.request('/cypress_smoketest/watchdog/' + startTime + '/' + Date.now()).then(
-      (response) => {
-        expect(response.body).to.have.length(2)
-      }
-    )
-  });
 
 })

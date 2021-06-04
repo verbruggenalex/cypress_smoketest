@@ -22,6 +22,7 @@ grumphp:
       max_size: 100K
       ignore_patterns:
         - composer.lock
+        - lib/mysql/dump.sql
     # gherkin: ~
     git_blacklist:
       keywords:

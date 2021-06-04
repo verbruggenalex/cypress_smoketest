@@ -23,20 +23,27 @@ function cypress_smoketest_help($route_name, RouteMatchInterface $route_match) {
   }
 }
 
-function cypress_smoketest_page_attachments(array &$attachments) {
+function cypress_smoketest_page_attachments_alter(array &$attachments) {
   $current_route = \Drupal::routeMatch();
   $route_name = $current_route->getRouteName();
 
-  if($route_name == 'view.frontpage.page_1') {
+  if($route_name == 'help.main') {
+    $watchdog_error = $attachments['watchdog-error'];
     $attachments['#attached']['html_head'][] = [
-      // The data.
       [
         '#type' => 'html_tag',
         '#tag' => 'script',
-        '#value' => "throw new Error('Javascript error simulation!');",
-
+        '#value' => "throw new Error('First js error');",
       ],
-      'javascript-error',
+      'javascript-error-1',
+    ];
+    $attachments['#attached']['html_head'][] = [
+      [
+        '#type' => 'html_tag',
+        '#tag' => 'script',
+        '#value' => "throw new Error('Second js error');",
+      ],
+      'javascript-error-2',
     ];
   }
 }

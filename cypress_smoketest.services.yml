@@ -1,6 +1,0 @@
-services:
-  cypress_smoketest.hook_init:
-    class: Drupal\cypress_smoketest\EventSubscriber\HookInitSubscriber
-    arguments: ['@current_route_match']
-    tags:
-      - { name: event_subscriber }

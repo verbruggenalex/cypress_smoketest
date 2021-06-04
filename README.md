@@ -22,5 +22,5 @@ xhost -
 
 ```bash
 # To just run the tests execute:
-docker-compose run --rm --entrypoint="cypress run" cypress
+docker-compose run --rm --entrypoint="cypress run" web
 ```

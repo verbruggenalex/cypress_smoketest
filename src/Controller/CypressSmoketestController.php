@@ -132,8 +132,11 @@ class CypressSmoketestController extends ControllerBase {
       ->execute();
     foreach ($result as $entry) {
       $messagePlaceholders = unserialize($entry->variables);
-      $message = new FormattableMarkup($entry->message, $messagePlaceholders);
-      $errors[] = strip_tags($message);
+      $message = new FormattableMarkup(str_replace(' @backtrace_string', '', $entry->message), $messagePlaceholders);
+      $errors[] = [
+        'wid' => $entry->wid,
+        'message' => strip_tags($message),
+      ];
     }
     return new JsonResponse(json_encode($errors));
   }
