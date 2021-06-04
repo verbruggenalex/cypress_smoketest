@@ -16,7 +16,7 @@ describe('Smoketest on list of urls', () => {
   });
 
   // Visit all urls from the fixture.
-  const items = require('../fixtures/smoke')
+  const items = require('../fixtures/smoke-single')
   items.forEach((item) => {
     it(`Visit ${item.url}`, () => {
       // Check if response status matches.
@@ -32,6 +32,25 @@ describe('Smoketest on list of urls', () => {
         url: item.url,
         failOnStatusCode: false
       })
+      // Applitools
+      cy.eyesOpen({
+        appName: 'Drupal',
+        testName: 'Adminstrator on ' + item.url,
+        // For some reason this does not work when put in config.
+        // There it will only take screenshots for chrome.
+        browser: [
+          {width: 1024, height: 768, name: 'firefox'},
+          {width: 1024, height: 768, name: 'chrome'},
+        ],
+      })
+
+      cy.eyesCheckWindow({
+        tag: item.url,
+        target: 'window',
+        fully: true
+      });
+
+      cy.eyesClose()
       // If we have exceptions check if we expect them.
       cy.on('uncaught:exception', (err, runnable) => {
         if (item.hasOwnProperty('jsallowregex')) {

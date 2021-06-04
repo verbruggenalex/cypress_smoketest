@@ -1,6 +1,7 @@
 {
   "baseUrl": "http://web",
   "reporter": "junit",
+  "watchForFileChanges": false,
   "reporterOptions": {
     "mochaFile": "cypress/results/output.xml"
   }
