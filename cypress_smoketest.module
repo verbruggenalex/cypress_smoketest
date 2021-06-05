@@ -10,7 +10,7 @@ use Drupal\Core\Routing\RouteMatchInterface;
 /**
  * Implements hook_help().
  */
-function cypress_smoketest_help($route_name, RouteMatchInterface $route_match) {
+function cypress_smoketest_help(string $route_name, RouteMatchInterface $route_match) {
   switch ($route_name) {
     // Main module help for the cypress_smoketest module.
     case 'help.page.cypress_smoketest':
@@ -23,11 +23,15 @@ function cypress_smoketest_help($route_name, RouteMatchInterface $route_match) {
   }
 }
 
+/**
+ * Implements hook_page_attachments_alter().
+ */
 function cypress_smoketest_page_attachments_alter(array &$attachments) {
   $current_route = \Drupal::routeMatch();
   $route_name = $current_route->getRouteName();
 
-  if($route_name == 'help.main') {
+  if ($route_name == 'help.main') {
+    // phpcs:ignore DrupalPractice.CodeAnalysis.VariableAnalysis.UnusedVariable
     $watchdog_error = $attachments['watchdog-error'];
     $attachments['#attached']['html_head'][] = [
       [

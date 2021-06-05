@@ -3,10 +3,10 @@
 namespace Drupal\cypress_smoketest\Controller;
 
 use Drupal\Core\Menu\MenuTreeParameters;
-use Drupal\user\Entity\User;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Url;
 use Drupal\Component\Render\FormattableMarkup;
+use Drupal\user\UserInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -24,24 +24,68 @@ class CypressSmoketestController extends ControllerBase {
   protected $routerRouteProvider;
 
   /**
+   * Drupal\Core\Path\CurrentPathStack definition.
+   *
+   * @var \Drupal\Core\Path\CurrentPathStack
+   */
+  protected $pathCurrent;
+
+  /**
+   * Drupal\Component\Datetime\TimeInterface definition.
+   *
+   * @var \Drupal\Component\Datetime\TimeInterface
+   */
+  protected $datetimeTime;
+
+  /**
+   * Drupal\Core\Database\Driver\mysql\Connection definition.
+   *
+   * @var \Drupal\Core\Database\Driver\mysql\Connection
+   */
+  protected $database;
+
+  /**
+   * Drupal\Core\Menu\MenuLinkTreeInterface definition.
+   *
+   * @var \Drupal\Core\Menu\MenuLinkTreeInterface
+   */
+  protected $toolbarMenuTree;
+
+  /**
+   * Drupal\Core\Language\LanguageManagerInterface definition.
+   *
+   * @var \Drupal\Core\Language\LanguageManagerInterface
+   */
+  protected $languageManager;
+
+  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
     $instance = parent::create($container);
     $instance->routerRouteProvider = $container->get('router.route_provider');
+    $instance->pathCurrent = $container->get('path.current');
+    $instance->datetimeTime = $container->get('datetime.time');
+    $instance->database = $container->get('database');
+    $instance->toolbarMenuTree = $container->get('toolbar.menu_tree');
+    $instance->languageManager = $container->get('language_manager');
     return $instance;
   }
 
   /**
    * Login endpoint to create and login user as role.
-   * @param $role
+   *
+   * @param string $role
+   *   The name of the role for which we need to login.
    *
    * @return array|\Symfony\Component\HttpFoundation\RedirectResponse
+   *   A redirectresponse to use a one time login link.
+   *
    * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    * @throws \Drupal\Core\Entity\EntityStorageException
    */
-  public function login($role) {
+  public function login(string $role) {
     $roles = $this->entityTypeManager()->getStorage('user_role')->loadMultiple();
     $logger = $this->getLogger('cypress_smoketest');
     $user = $this->currentUser();
@@ -62,10 +106,11 @@ class CypressSmoketestController extends ControllerBase {
           $logger->notice('User @name already exists.', ['@name' => $username]);
           // $uid = (int) reset($uids);
           $uid = 1;
-          $user = User::load($uid);
+          /** @var \Drupal\user\UserInterface $user */
+          $user = $user_storage->load($uid);
         }
         else {
-          /** @var \Drupal\user\Entity\User $user */
+          /** @var \Drupal\user\UserInterface $user */
           $user = $user_storage->create();
           $user->enforceIsNew();
           $user->setUsername($username);
@@ -79,24 +124,27 @@ class CypressSmoketestController extends ControllerBase {
           $logger->notice('Created user @name.', ['@name' => $username]);
         }
 
-        $timestamp = \Drupal::time()->getRequestTime() - 10;
-        $path = \Drupal::service('path.current')->getPath();
+        $timestamp = $this->datetimeTime->getRequestTime() - 10;
+        $path = $this->pathCurrent->getPath();
 
-        // Login with same destination to re-list routers as logged in user.
-        $link = Url::fromRoute(
-          'user.reset.login',
-          [
-            'uid' => $user->id(),
-            'timestamp' => $timestamp,
-            'hash' => user_pass_rehash($user, $timestamp),
-          ],
-          [
-            'absolute' => TRUE,
-            'query' => $path ? ['destination' => $path] : [],
-            'language' => \Drupal::languageManager()->getLanguage($user->getPreferredLangcode()),
-          ]
-        )->toString();
-        return new RedirectResponse($link);
+        // Login with same destination as current page.
+        if ($user instanceof UserInterface) {
+          /** @var string $link */
+          $link = Url::fromRoute(
+            'user.reset.login',
+            [
+              'uid' => $user->id(),
+              'timestamp' => $timestamp,
+              'hash' => user_pass_rehash($user, $timestamp),
+            ],
+            [
+              'absolute' => TRUE,
+              'query' => $path ? ['destination' => $path] : [],
+              'language' => $this->languageManager->getLanguage($user->getPreferredLangcode()),
+            ]
+          )->toString(FALSE);
+          return new RedirectResponse($link);
+        }
       }
       else {
         return [
@@ -116,28 +164,34 @@ class CypressSmoketestController extends ControllerBase {
   /**
    * Get watchdog messages between two timestamps.
    *
-   * @todo: apparently timestamps on JS and PHP are different. Needs to be resolved.
+   * @todo apparently timestamps on JS and PHP are different. Needs to be resolved.
    *
    * @param int $test_start_timestamp
+   *   The start time for when we want to fetch watchdog messages.
    * @param int $test_end_timestamp
+   *   The end time until when we want to fetch watchdog messages.
    *
    * @return \Symfony\Component\HttpFoundation\JsonResponse
+   *   A json response in the form of an array.
    */
   public function getWatchdogPhpMessages(int $test_start_timestamp, int $test_end_timestamp) {
     $errors = [];
-    $result = \Drupal::database()->select('watchdog', 'w')
+    $result = $this->database->select('watchdog', 'w')
       ->fields('w', [])
       ->condition('w.type', 'php', '=')
       ->condition('w.timestamp', [$test_start_timestamp, $test_end_timestamp], 'BETWEEN')
       ->execute();
-    foreach ($result as $entry) {
-      $messagePlaceholders = unserialize($entry->variables);
-      $message = new FormattableMarkup(str_replace(' @backtrace_string', '', $entry->message), $messagePlaceholders);
-      $errors[] = [
-        'wid' => $entry->wid,
-        'message' => strip_tags($message),
-      ];
+    if ($result) {
+      foreach ($result as $entry) {
+        $messagePlaceholders = unserialize($entry->variables);
+        $message = new FormattableMarkup(str_replace(' @backtrace_string', '', $entry->message), $messagePlaceholders);
+        $errors[] = [
+          'wid' => $entry->wid,
+          'message' => strip_tags($message),
+        ];
+      }
     }
+
     return new JsonResponse(json_encode($errors));
   }
 
@@ -145,12 +199,13 @@ class CypressSmoketestController extends ControllerBase {
    * Helper function to return all admin menu links for current user.
    *
    * @return \Symfony\Component\HttpFoundation\JsonResponse
+   *   A json response in the form of an array of urls.
    */
   public function getAdminMenuLinksForCurrentUser() {
     // Get all links from the toolbar.
-    $menu_tree = \Drupal::service('toolbar.menu_tree');
     $parameters = new MenuTreeParameters();
     $parameters->setMinDepth(2)->setMaxDepth(5);
+    $menu_tree = $this->toolbarMenuTree;
     $tree = $menu_tree->load('admin', $parameters);
     $manipulators = [
       ['callable' => 'menu.default_tree_manipulators:checkAccess'],
@@ -175,11 +230,13 @@ class CypressSmoketestController extends ControllerBase {
   /**
    * Get menu links out of tree.
    *
-   * @param $tree
+   * @param array $tree
+   *   The tree out of which we want to get links.
    *
    * @return array
+   *   An array of links retrieved from the menu tree.
    */
-  public function retrieveLinks($tree) {
+  public function retrieveLinks(array $tree) {
     $links = [];
 
     foreach ($tree as $element) {

@@ -15,6 +15,7 @@
     },
     "require-dev": {
         "composer/installers": "^1.7",
+        "cweagans/composer-patches": "^1.7",
         "drupal/admin_toolbar": "^2.0",
         "drupal/coder": "^8.3",
         "drupal/console": "^1.9",
@@ -26,8 +27,10 @@
         "enlightn/security-checker": "^1.9",
         "ergebnis/composer-normalize": "^2.2",
         "kint-php/kint": "^3.3",
+        "mglaman/phpstan-drupal": "^0.12.10",
         "php-parallel-lint/php-parallel-lint": "^1.2",
-        "phpro/grumphp": "^1.2.0"
+        "phpro/grumphp": "^1.2.0",
+        "phpstan/phpstan-deprecation-rules": "^0.12.6"
     },
     "config": {
         "sort-packages": true
@@ -51,6 +54,11 @@
             "web/modules/contrib/{$name}": [
                 "type:drupal-module"
             ]
+        },
+        "patches": {
+            "drupal/core": {
+                "PHPDocs with wrong parameters": "https://www.drupal.org/files/issues/2019-09-03/queryinterface-range-updated-phpdocs.patch"
+            }
         }
     },
     "repositories": {

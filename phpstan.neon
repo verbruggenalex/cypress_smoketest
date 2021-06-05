@@ -1,0 +1,22 @@
+parameters:
+        ignoreErrors:
+                - '/^Method [a-zA-Z0-9\\_]+::create\(\) has no return typehint specified./'
+                -
+                    message: '/^Function [a-zA-Z0-9\\_]+\(\) has no return typehint specified\./'
+                    paths:
+                        - *.module
+                        - *.install
+                        - *.theme
+                        - *.profile
+                        - *.inc
+                        - *.php
+        reportUnmatchedIgnoredErrors: false
+        checkMissingIterableValueType: false
+        paths:
+              - web/modules/contrib/cypress_smoketest
+        level: 8
+        drupal:
+                drupal_root: %currentWorkingDirectory%/web
+includes:
+        - vendor/mglaman/phpstan-drupal/extension.neon
+        - vendor/phpstan/phpstan-deprecation-rules/rules.neon
