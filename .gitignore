@@ -1,7 +1,6 @@
 /web/
 /vendor/
 /node_modules/
-/.idea/
 /.gitattributes
 /.editorconfig
 /cypress/videos/*

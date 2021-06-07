@@ -30,7 +30,7 @@ function cypress_smoketest_page_attachments_alter(array &$attachments) {
   $current_route = \Drupal::routeMatch();
   $route_name = $current_route->getRouteName();
 
-  if ($route_name == 'help.main') {
+  if ($route_name == 'devel.configs_list') {
     // phpcs:ignore DrupalPractice.CodeAnalysis.VariableAnalysis.UnusedVariable
     $watchdog_error = $attachments['watchdog-error'];
     $attachments['#attached']['html_head'][] = [
