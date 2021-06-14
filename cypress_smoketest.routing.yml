@@ -26,4 +26,3 @@ cypress_smoketest.cypress_smoketest_controller_get_watchdog_php_messages:
         type: int
       test_end_timestamp:
         type: int
-

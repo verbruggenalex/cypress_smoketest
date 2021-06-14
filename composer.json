@@ -29,6 +29,7 @@
         "kint-php/kint": "^3.3",
         "mglaman/phpstan-drupal": "^0.12.10",
         "php-parallel-lint/php-parallel-lint": "^1.2",
+        "phpmd/phpmd": "^2.10",
         "phpro/grumphp": "^1.2.0",
         "phpstan/phpstan-deprecation-rules": "^0.12.6"
     },
@@ -80,6 +81,9 @@
             "./vendor/bin/drush si --db-url=mysql://root:@mysql:3306/drupal standard --account-pass=admin -y",
             "./vendor/bin/drush en admin_toolbar admin_toolbar_tools cypress_smoketest devel -y"
         ],
+        "phpcs": "./vendor/bin/phpcs",
+        "phpmd": "./vendor/bin/phpmd web/modules/contrib/cypress_smoketest text phpmd.xml",
+        "phpstan": "./vendor/bin/phpstan",
         "symlink-module": [
             "rm -rf web/modules/contrib/cypress_smoketest",
             "mkdir -p web/modules/contrib/cypress_smoketest",
