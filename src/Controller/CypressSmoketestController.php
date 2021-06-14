@@ -79,7 +79,7 @@ class CypressSmoketestController extends ControllerBase {
    *   The name of the role for which we need to login.
    *
    * @return array|\Symfony\Component\HttpFoundation\RedirectResponse
-   *   A redirectresponse to use a one time login link.
+   *   A redirect response to use a one time login link.
    *
    * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
@@ -201,7 +201,7 @@ class CypressSmoketestController extends ControllerBase {
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   A json response in the form of an array of urls.
    */
-  public function getAdminMenuLinksForCurrentUser() {
+  public function getAdminMenuLinksForCurrentUser(): JsonResponse {
     // Get all links from the toolbar.
     $parameters = new MenuTreeParameters();
     $parameters->setMinDepth(2)->setMaxDepth(5);
@@ -236,7 +236,7 @@ class CypressSmoketestController extends ControllerBase {
    * @return array
    *   An array of links retrieved from the menu tree.
    */
-  public function retrieveLinks(array $tree) {
+  public function retrieveLinks(array $tree): array {
     $links = [];
 
     foreach ($tree as $element) {

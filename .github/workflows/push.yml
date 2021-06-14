@@ -32,6 +32,10 @@ jobs:
           while [ $(docker-compose ps | grep -c healthy) -lt 2 ]; do sleep 5; echo "Waiting for services"; done
           docker-compose ps
 
+      - name: Run Grumphp
+        run: |
+          docker-compose exec -T web grumphp run
+
       - name: Run Cypress
         run: |
           docker-compose exec -T web cypress install

@@ -3,7 +3,14 @@
   <component name="MessDetector">
     <phpmd_settings>
       <MessDetectorConfiguration tool_path="$PROJECT_DIR$/vendor/bin/phpmd" />
+      <phpmd_by_interpreter interpreter_id="35f4206c-8b68-448d-8c62-b976bb1f15b6" tool_path="/home/verbral/Repositories/github.com/verbruggenalex/cypress_smoketest/vendor/bin/phpmd" timeout="30000" />
     </phpmd_settings>
+  </component>
+  <component name="PhpCodeSniffer">
+    <phpcs_settings>
+      <PhpCSConfiguration beautifier_path="./vendor/bin/phpcbf" tool_path="./vendor/bin/phpcs" />
+      <phpcs_by_interpreter interpreter_id="35f4206c-8b68-448d-8c62-b976bb1f15b6" beautifier_path="$PROJECT_DIR$/vendor/bin/phpcbf" standards="MySource;PEAR;PSR1;PSR12;PSR2;Squiz;Zend" tool_path="/home/verbral/Repositories/github.com/verbruggenalex/cypress_smoketest/vendor/bin/phpcs" timeout="30000" />
+    </phpcs_settings>
   </component>
   <component name="PhpIncludePathManager">
     <include_path>
